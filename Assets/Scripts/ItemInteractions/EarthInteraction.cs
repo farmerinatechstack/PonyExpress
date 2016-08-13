@@ -4,6 +4,7 @@ using System.Collections;
 // Handles interactions with the globe.
 public class EarthInteraction : MonoBehaviour {
 	public Transform cameraTransform;
+	public StartScript startScript;
 
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
