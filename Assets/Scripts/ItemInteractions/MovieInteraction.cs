@@ -1,20 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 
 public class MovieInteraction : MonoBehaviour {
-	public bool paused;
-	public GameObject pauseMenu;
-	public event Action Play;
-	public event Action Pause;
+	public GameObject pauseMenu;		// Menu to be displayed on pause
+	public event Action ToggleState;	// Toggles movie play or pause
 
 	public delegate void TransitionAction ();
 	public static event TransitionAction FadeToBlack;
 
-	public float fadeTime;
-	public string sceneName;
-
+	private bool paused;
 	[SerializeField] private VRAssets.VRInput input;
 
 	// Use this for initialization
@@ -33,33 +28,20 @@ public class MovieInteraction : MonoBehaviour {
 	}
 
 	void TogglePause() {
-		if (paused) {
-			pauseMenu.SetActive (false);
-			paused = false;
-			if (Play != null)
-				Play ();
-		} else {
-			pauseMenu.SetActive (true);
-			paused = true;
-			if (Pause != null)
-				Pause ();
+		paused = !paused;
+
+		if (ToggleState != null) {
+			pauseMenu.SetActive (paused);
+			ToggleState ();
 		}
 	}
 
 	void ExitScene() {
-		if (!paused) {
+		if (!paused) {	// If the scene is not paused, pause the scene without exiting
 			TogglePause ();
 		} else {
-			if (FadeToBlack != null) {
+			if (FadeToBlack != null)	// Execute a transition action if not null
 				FadeToBlack ();
-			}
-			StartCoroutine (SwapScene ());
 		}
-	}
-
-	private IEnumerator SwapScene() {
-		yield return new WaitForSeconds (fadeTime);
-
-		SceneManager.LoadScene (sceneName);
 	}
 }

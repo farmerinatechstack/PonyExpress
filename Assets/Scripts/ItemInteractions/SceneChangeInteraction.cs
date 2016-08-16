@@ -6,30 +6,26 @@ using System;
 // Handles interaction with the back button on the menu.
 public class SceneChangeInteraction : MonoBehaviour {
 	public bool inGaze;
-	public string sceneName;
-	public float fadeTime;
+	public string videoName;
+	public float videoLength;
 
 	public delegate void TransitionAction ();
 	public static event TransitionAction FadeToBlack;
 
+	[SerializeField] private ExperienceData data;
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
+
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
 		interactiveItem.OnExit += HandleExit;
-		interactiveItem.OnDown += HandleDown;
 		radial.OnSelectionComplete += HandleSelected;
 	}
 
 	private void OnDisable() {
 		interactiveItem.OnEnter -= HandleEnter;
 		interactiveItem.OnExit -= HandleExit;
-		interactiveItem.OnDown -= HandleDown;
 		radial.OnSelectionComplete -= HandleSelected;
-	}
-
-	private void HandleDown() {
-
 	}
 
 	private void HandleEnter() {
@@ -43,17 +39,11 @@ public class SceneChangeInteraction : MonoBehaviour {
 	}
 
 	private void HandleSelected() {
-		if (inGaze) {		
-			if (FadeToBlack != null) {
-				FadeToBlack ();
-			}
-			StartCoroutine (SwapScene ());
+		if (inGaze & FadeToBlack != null) { 
+			print ("Switching to: " + videoName);
+			data.videoName = videoName;
+			data.videoLength = videoLength;
+			FadeToBlack ();
 		}
-	}
-
-	private IEnumerator SwapScene() {
-		yield return new WaitForSeconds (fadeTime);
-
-		SceneManager.LoadScene (sceneName);
 	}
 }

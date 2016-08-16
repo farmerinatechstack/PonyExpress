@@ -5,6 +5,8 @@ using System;
 using System.IO;							
 
 /************************************************************************************
+Modified for usage from the Oculus VR Sample Framework
+
 Usage:
 
 	Place a simple textured quad surface with the correct aspect ratio in your scene.
@@ -12,12 +14,8 @@ Usage:
 	Add the MoviePlayerSample.cs script to the surface object.
 
 	Supply the name of the media file to play:
-	This sample assumes the media file is placed in "Assets/StreamingAssets", ie
-	"ProjectName/Assets/StreamingAssets/MovieName.mp4".
-
-	On Desktop, Unity MovieTexture functionality is used. Note: the media file
-	is loaded at runtime, and therefore expected to be converted to Ogg Theora
-	beforehand.
+	Place the file in "Assets/StreamingAssets", ie "ProjectName/Assets/StreamingAssets/MovieName.mp4".
+	An mp4 and Ogg Theora format must be placed in the folder.
 
 Implementation:
 
@@ -45,8 +43,12 @@ Implementation:
 public class MoviePlayerSample : MonoBehaviour
 {
 	public string 	movieName = string.Empty;
+	public float	movieLength = 0.0f;
     public bool     videoPaused = false;
     private bool    videoPausedBeforeAppPause = false;
+
+	public delegate void TransitionAction ();
+	public static event TransitionAction FadeToBlack;
 
 	public MovieInteraction movieInteractions;
 
@@ -103,16 +105,14 @@ public class MoviePlayerSample : MonoBehaviour
 	}
 
 	void OnEnable() {
-		movieInteractions.Play += ToggleMovie;
-		movieInteractions.Pause += ToggleMovie;
+		movieInteractions.ToggleState += ToggleState;
 	}
 
 	void OnDisable() {
-		movieInteractions.Play -= ToggleMovie;
-		movieInteractions.Pause -= ToggleMovie;
+		movieInteractions.ToggleState -= ToggleState;
 	}
 
-	void ToggleMovie() {
+	void ToggleState() {
 		videoPaused = !videoPaused;
 		SetPaused (videoPaused);
 	}
@@ -122,7 +122,10 @@ public class MoviePlayerSample : MonoBehaviour
 	/// </summary>
 	void Awake()
 	{
-		Debug.Log("MovieSample Awake");
+		ExperienceData d = GameObject.Find ("ExperienceData").GetComponent<ExperienceData> ();
+		movieName = d.videoName;
+		movieLength = d.videoLength;
+		StartCoroutine (WaitToEnd());
 
 		#if UNITY_ANDROID && !UNITY_EDITOR
 				OVR_Media_Surface_Init();
@@ -155,6 +158,13 @@ public class MoviePlayerSample : MonoBehaviour
 				IssuePluginEvent(MediaSurfaceEventType.Initialize);
 		#endif
     }
+
+	IEnumerator WaitToEnd() {
+		yield return new WaitForSeconds (movieLength);
+
+		if (FadeToBlack != null)
+			FadeToBlack ();
+	}
 
     /// <summary>
     /// Construct the streaming asset path.
@@ -194,10 +204,7 @@ public class MoviePlayerSample : MonoBehaviour
 				audioEmitter.clip = movieTexture.audioClip;
 				mediaFullPath = streamingMediaPath;
 		#endif
-		Debug.Log("Movie FullPath: " + mediaFullPath);
-
         // Video must start only after mediaFullPath is filled in
-        Debug.Log("MovieSample Start");
         StartCoroutine(DelayedStartVideo());
     }
 
@@ -210,8 +217,6 @@ public class MoviePlayerSample : MonoBehaviour
 
 		if (!startedVideo)
 		{
-			Debug.Log("Mediasurface DelayedStartVideo");
-
 			startedVideo = true;
 			#if (UNITY_ANDROID && !UNITY_EDITOR)
 						mediaPlayer = StartVideoPlayerOnTextureId(textureWidth, textureHeight, mediaFullPath);
@@ -285,7 +290,6 @@ public class MoviePlayerSample : MonoBehaviour
 
     public void SetPaused(bool wasPaused)
     {
-        Debug.Log("SetPaused: " + wasPaused);
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
 				if (mediaPlayer != null)
 				{
@@ -326,7 +330,6 @@ public class MoviePlayerSample : MonoBehaviour
     /// </summary>
     void OnApplicationPause(bool appWasPaused)
     {
-        Debug.Log("OnApplicationPause: " + appWasPaused);
         if (appWasPaused)
         {
             videoPausedBeforeAppPause = videoPaused;

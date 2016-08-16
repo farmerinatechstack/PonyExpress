@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class StartScript : MonoBehaviour {
+	[SerializeField] private ExperienceData data;
+
 	[SerializeField] private VRAssets.ReticleRadial radial;
 	[SerializeField] private Animator cameraAnim;
 	[SerializeField] private Animator canvasAnim;
@@ -21,19 +23,15 @@ public class StartScript : MonoBehaviour {
 	private void OnDisable() {
 		radial.OnSelectionComplete -= HandleStart;
 	}
-
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
 	// Update is called once per frame
 	void Update () {
-		radial.Show ();
+		if (!data.started)
+			radial.Show ();
 	}
 
 	void HandleStart() {
-		print ("Start selected");
+		data.started = true;
 		radial.Hide ();
 
 		earth.enabled = true;

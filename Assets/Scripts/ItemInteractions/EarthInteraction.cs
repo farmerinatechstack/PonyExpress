@@ -7,38 +7,9 @@ public class EarthInteraction : MonoBehaviour {
 	public StartScript startScript;
 
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
-	[SerializeField] private VRAssets.ReticleRadial radial;
 
 	private float xRotation = 0f;
 	private float yRotation = 0f;
-
-	private void OnEnable() {
-		interactiveItem.OnEnter += HandleEnter;
-		interactiveItem.OnExit += HandleExit;
-		interactiveItem.OnDown += HandleDown;
-	}
-
-	private void OnDisable() {
-		interactiveItem.OnEnter -= HandleEnter;
-		interactiveItem.OnExit -= HandleExit;
-		interactiveItem.OnDown -= HandleDown;
-	}
-
-	private void HandleDown() {
-
-	}
-
-	private void HandleEnter() {
-		
-	}
-
-	private void HandleExit() {
-		
-	}
-
-	private void Start() {
-		print ("Start Up: " + transform.up);
-	}
 
 	private void Update() {
 		Vector3 rotateVector = GetRotationVector ();
