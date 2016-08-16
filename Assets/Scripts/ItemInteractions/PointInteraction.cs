@@ -3,29 +3,27 @@ using System.Collections;
 
 // Handles interaction with the SAC -> LA light journey
 public class PointInteraction : MonoBehaviour {
-	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
-	[SerializeField] private VRAssets.ReticleRadial radial;
+	public string titleText;
+	public Texture imageTexture;
+	public string videoName;
+	public float videoLength;
 
 	public bool inGaze;
 	public GameObject menu;
-	public Animator menuAnimator;
+
+	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
+	[SerializeField] private VRAssets.ReticleRadial radial;
 
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
 		interactiveItem.OnExit += HandleExit;
-		interactiveItem.OnDown += HandleDown;
 		radial.OnSelectionComplete += HandleSelected;
 	}
 
 	private void OnDisable() {
 		interactiveItem.OnEnter -= HandleEnter;
 		interactiveItem.OnExit -= HandleExit;
-		interactiveItem.OnDown -= HandleDown;
 		radial.OnSelectionComplete -= HandleSelected;
-	}
-
-	private void HandleDown() {
-
 	}
 
 	private void HandleEnter() {
@@ -40,8 +38,13 @@ public class PointInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze) {
+			MenuDisplay disp = menu.GetComponent<MenuDisplay> ();
+			disp.titleText = titleText;
+			disp.imageTexture = imageTexture;
+			disp.videoName = videoName;
+			disp.videoLength = videoLength;
+
 			menu.SetActive (true);
-			menuAnimator.Play ("Grow");
 		}
 	}
 }

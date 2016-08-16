@@ -6,7 +6,6 @@ public class BackInteraction : MonoBehaviour {
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
-	public Animator menuAnimator;
 	public bool inGaze;
 	public GameObject menu;
 
@@ -40,16 +39,9 @@ public class BackInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze) {
-			menuAnimator.Play("Shrink");
-			StartCoroutine (HideMenu ());
+			MenuDisplay disp = menu.GetComponent<MenuDisplay> ();
+			disp.Hide ();
+			HandleExit ();
 		}
-	}
-
-	private IEnumerator HideMenu() {
-		yield return new WaitForSeconds (1.0f);
-		print ("Disappearing");
-		menu.SetActive (false);
-		menu.transform.localScale = Vector3.one;
-		HandleExit ();
 	}
 }
