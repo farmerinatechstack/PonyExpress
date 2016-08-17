@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class AutoRotate : MonoBehaviour {
+	public 	float rotateFactor;
+
 	Vector3 rotation;
 
 	// Use this for initialization
@@ -13,6 +15,6 @@ public class AutoRotate : MonoBehaviour {
 	void Update () {
 		float dt = Time.deltaTime;
 		rotation.x = rotation.y = rotation.z = dt;
-		transform.Rotate (rotation, Space.World);
+		transform.Rotate (rotation * rotateFactor, Space.World);
 	}
 }

@@ -6,28 +6,27 @@ using System.Collections.Generic;
 public class TitleScript : MonoBehaviour {
 	[SerializeField] private float waitTime;
 	[SerializeField] private float writeSpeed;
-	[SerializeField] private float translationAmount;
-	//[SerializeField] private RectTransform cursor;
+	[SerializeField] private float deleteSpeed;
 
 
 	private Text titleText;
 	private List<string> titles;
 
 	private bool cycleTitle;
-	[SerializeField] private string currTitle;
+	private string currTitle;
 
 	// Use this for initialization
 	void Start () {
 		titleText = gameObject.GetComponent<Text> ();
-		currTitle = "Home";
+		currTitle = "home";
 		cycleTitle = true;
 
 		titles = new List<string> ();
-		titles.Add ("Home");
-		titles.Add ("Casa");
-		titles.Add ("Bahay");
-		titles.Add ("Domicile");
-		titles.Add ("Ghar");
+		titles.Add ("home");
+		titles.Add ("casa");
+		titles.Add ("bahay");
+		titles.Add ("domicile");
+		titles.Add ("ghar");
 	}
 	
 	// Update is called once per frame
@@ -43,8 +42,7 @@ public class TitleScript : MonoBehaviour {
 
 		for (int i = 0; i < currTitle.Length; i++) { // Delete characters
 			titleText.text = currTitle.Substring(0, currTitle.Length-i-1);
-			TranslateCursor (-translationAmount);
-			yield return new WaitForSeconds (writeSpeed);
+			yield return new WaitForSeconds (deleteSpeed);
 		}
 
 		string prevTitle = currTitle;
@@ -54,16 +52,8 @@ public class TitleScript : MonoBehaviour {
 
 		for (int i = 0; i < currTitle.Length; i++) { // Add characters
 			titleText.text = currTitle.Substring(0,i+1);
-			TranslateCursor (translationAmount);
 			yield return new WaitForSeconds (writeSpeed);
 		}
 		cycleTitle = true;
-	}
-
-	void TranslateCursor(float translationAmount) {
-		//Vector3 newPos = cursor.localPosition;
-		//newPos.x += translationAmount;
-
-		//cursor.localPosition = newPos;
 	}
 }
