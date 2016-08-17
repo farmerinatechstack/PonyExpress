@@ -42,8 +42,8 @@ Implementation:
 
 public class MoviePlayerSample : MonoBehaviour
 {
-	public string 	movieName = string.Empty;
-	public float	movieLength = 0.0f;
+	public string 	movieName;
+	public float	movieLength;
     public bool     videoPaused = false;
     private bool    videoPausedBeforeAppPause = false;
 
@@ -122,9 +122,17 @@ public class MoviePlayerSample : MonoBehaviour
 	/// </summary>
 	void Awake()
 	{
-		ExperienceData d = GameObject.Find ("ExperienceData").GetComponent<ExperienceData> ();
-		movieName = d.videoName;
-		movieLength = d.videoLength;
+		GameObject d = GameObject.Find ("ExperienceData");
+
+		if (d != null) {
+			ExperienceData data = d.GetComponent<ExperienceData> ();
+			movieName = data.videoName;
+			movieLength = data.videoLength;
+		} else {
+			movieName = "ForbiddenTrim.mp4"; 	// Test movie
+			movieLength = 5.0f;					// Test length
+		}
+			
 		StartCoroutine (WaitToEnd());
 
 		#if UNITY_ANDROID && !UNITY_EDITOR

@@ -30,11 +30,6 @@ namespace VRAssets {
 			vrInput.OnDown -= HandleDown;
 		}
 
-		// Use this for initialization
-		void Start () {
-		
-		}
-		
 		// Update is called once per frame
 		void Update () {
 			EyeRaycast ();

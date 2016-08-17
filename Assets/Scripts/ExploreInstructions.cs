@@ -3,18 +3,18 @@ using System.Collections;
 
 public class ExploreInstructions : MonoBehaviour {
 	[SerializeField] Animator anim;
+	[SerializeField] private MenuDisplay menuDisplay;
 
 	void OnEnable() {
 		anim.Play ("PromptExploration");
+		menuDisplay.MenuToggled += RemoveInstructions;
 	}
 
-	// Use this for initialization
-	void Start () {
-	
+	void OnDisable() {
+		menuDisplay.MenuToggled -= RemoveInstructions;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void RemoveInstructions() {
+		gameObject.SetActive (false);
 	}
 }

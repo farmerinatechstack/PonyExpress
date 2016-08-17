@@ -4,6 +4,10 @@ using System.Collections;
 public class StartScript : MonoBehaviour {
 	[SerializeField] private ExperienceData data;
 
+	[SerializeField] private AudioSource ambientAudio;
+	[SerializeField] private AudioSource selectAudio;
+
+
 	[SerializeField] private VRAssets.ReticleRadial radial;
 	[SerializeField] private Animator cameraAnim;
 	[SerializeField] private Animator canvasAnim;
@@ -31,6 +35,9 @@ public class StartScript : MonoBehaviour {
 	}
 
 	void HandleStart() {
+		selectAudio.Play ();
+		ambientAudio.PlayDelayed (0.2f);
+
 		data.started = true;
 		radial.Hide ();
 

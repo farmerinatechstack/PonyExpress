@@ -13,6 +13,7 @@ public class SceneChangeInteraction : MonoBehaviour {
 	public static event TransitionAction FadeToBlack;
 
 	[SerializeField] private ExperienceData data;
+	[SerializeField] private Animator menuAnimator;
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
@@ -31,11 +32,13 @@ public class SceneChangeInteraction : MonoBehaviour {
 	private void HandleEnter() {
 		inGaze = true;
 		radial.Show ();
+		menuAnimator.Play ("VideoPop");
 	}
 
 	private void HandleExit() {
 		inGaze = false;
 		radial.Hide ();
+		menuAnimator.Play ("VideoShrink");
 	}
 
 	private void HandleSelected() {

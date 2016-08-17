@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 
 public class MenuDisplay : MonoBehaviour {
@@ -8,11 +9,28 @@ public class MenuDisplay : MonoBehaviour {
 	public string videoName;
 	public float videoLength;
 
+	public event Action MenuToggled;
+	public bool displayed = false;
+
 	[SerializeField] Animator menuAnim;
 	[SerializeField] Text titleTextUI;
 	[SerializeField] GameObject videoPreview;
 
 	void OnEnable() {
+		if (!displayed) {
+			displayed = true;
+		}
+
+		if (MenuToggled != null) {
+			MenuToggled ();
+		}
+
+		SetMenuValues ();
+
+		menuAnim.Play ("Grow");
+	}
+
+	void SetMenuValues() {
 		titleTextUI.text = titleText;
 
 		SceneChangeInteraction videoInteraction = videoPreview.GetComponent<SceneChangeInteraction> ();
@@ -21,11 +39,12 @@ public class MenuDisplay : MonoBehaviour {
 
 		Renderer rend = videoPreview.GetComponent<Renderer> ();
 		rend.material.mainTexture = imageTexture;
-
-		menuAnim.Play ("Grow");
 	}
 
 	public void Hide() {
+		if (MenuToggled != null)
+			MenuToggled ();
+
 		StartCoroutine (HideMenu ());
 	}
 
