@@ -18,7 +18,7 @@ public class PointInteraction : MonoBehaviour {
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
 	void Start() {
-		canBeSelected = true;
+		canBeSelected = false;
 	}
 
 	private void OnEnable() {
@@ -61,7 +61,7 @@ public class PointInteraction : MonoBehaviour {
 		}
 	}
 
-	private void ToggleCanBeSelected() {
+	public void ToggleCanBeSelected() {
 		canBeSelected = !canBeSelected;
 	}
 }

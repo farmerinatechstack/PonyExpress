@@ -5,9 +5,11 @@ using System.Collections;
 public class WorldPoint : MonoBehaviour {
 	private WorldSystem world;
 	private Renderer rend;
+	private bool ready;
 
 	// Use this for initialization
 	void Start () {
+		ready = false;
 		world = transform.parent.GetComponent<WorldSystem> ();
 		if (world == null) {
 			// TODO: throw exception
@@ -19,6 +21,11 @@ public class WorldPoint : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		rend.material.color = Color.Lerp (world.offColor, world.onColor, world.lightBeat);
+		if (ready)
+			rend.material.color = Color.Lerp (world.offColor, world.onColor, world.lightBeat);
+	}
+
+	public void SetReady() {
+		ready = true;
 	}
 }

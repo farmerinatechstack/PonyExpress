@@ -17,8 +17,6 @@ public class StartScript : MonoBehaviour {
 
 	[SerializeField] private EarthInteraction earth;
 	[SerializeField] private WorldSystem worldSys;
-	[SerializeField] private WorldPoint point;
-	[SerializeField] private PointInteraction pointInteraction;
 
 	[SerializeField] private GameObject explorePrompts;
 
@@ -45,15 +43,11 @@ public class StartScript : MonoBehaviour {
 
 		earth.enabled = true;
 		worldSys.enabled = true;
-		point.enabled = true;
-		pointInteraction.enabled = true;
 
 		cameraAnim.Play ("TranslateCamera");
 		canvasAnim.Play ("FadeCanvas");
 		flyer1Anim.Play ("Flyer1");
 		flyer2Anim.Play ("Flyer2");
-
-
 
 		StartCoroutine (PromptExploration ());
 	}
