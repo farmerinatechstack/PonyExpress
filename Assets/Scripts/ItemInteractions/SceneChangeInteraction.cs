@@ -6,6 +6,7 @@ using System;
 // Handles interaction with the back button on the menu.
 public class SceneChangeInteraction : MonoBehaviour {
 	public bool inGaze;
+	public bool contains360;
 	public string videoName;
 	public float videoLength;
 
@@ -43,7 +44,6 @@ public class SceneChangeInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze & FadeToBlack != null) { 
-			print ("Switching to: " + videoName);
 			data.videoName = videoName;
 			data.videoLength = videoLength;
 			FadeToBlack ();

@@ -4,41 +4,52 @@ using System;
 using System.Collections;
 
 public class MenuDisplay : MonoBehaviour {
+	public bool display360;
 	public string titleText;
 	public Texture imageTexture;
 	public string videoName;
 	public float videoLength;
 
 	public event Action MenuToggled;
-	public bool displayed = false;
 
 	[SerializeField] Animator menuAnim;
 	[SerializeField] Text titleTextUI;
-	[SerializeField] GameObject videoPreview;
+	[SerializeField] GameObject videoPreview360;
+	[SerializeField] GameObject videoPreview2D;
+
 
 	void OnEnable() {
-		if (!displayed) {
-			displayed = true;
-		}
-
 		if (MenuToggled != null) {
 			MenuToggled ();
 		}
 
-		SetMenuValues ();
+		SetMenu ();
 
 		menuAnim.Play ("Grow");
 	}
 
-	void SetMenuValues() {
+	void SetMenu() {
 		titleTextUI.text = titleText;
 
-		SceneChangeInteraction videoInteraction = videoPreview.GetComponent<SceneChangeInteraction> ();
-		videoInteraction.videoName = videoName;
-		videoInteraction.videoLength = videoLength;
+		if (display360) {
+			videoPreview2D.SetActive (false);
 
-		Renderer rend = videoPreview.GetComponent<Renderer> ();
-		rend.material.mainTexture = imageTexture;
+			SceneChangeInteraction videoInteraction = videoPreview360.GetComponent<SceneChangeInteraction> ();
+			videoInteraction.videoName = videoName;
+			videoInteraction.videoLength = videoLength;
+
+			Renderer rend = videoPreview360.GetComponent<Renderer> ();
+			rend.material.mainTexture = imageTexture;
+		} else {
+			videoPreview360.SetActive (false);
+
+			VideoPreview player = videoPreview2D.GetComponent<VideoPreview> ();
+			player.movieName = videoName;
+			player.movieLength = videoLength;
+
+			Renderer rend = videoPreview2D.GetComponent<Renderer> ();
+			rend.material.mainTexture = imageTexture;
+		}
 	}
 
 	public void Hide() {

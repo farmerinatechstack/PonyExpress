@@ -9,6 +9,7 @@ public class PointInteraction : MonoBehaviour {
 	public float videoLength;
 
 	public bool canBeSelected;
+	public bool contains360;
 
 	public bool inGaze;
 	public GameObject menu;
@@ -56,6 +57,7 @@ public class PointInteraction : MonoBehaviour {
 			disp.imageTexture = imageTexture;
 			disp.videoName = videoName;
 			disp.videoLength = videoLength;
+			disp.display360 = contains360;
 
 			menu.SetActive (true);
 		}
