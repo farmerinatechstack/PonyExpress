@@ -12,9 +12,13 @@ public class VideoPreview : MonoBehaviour
 {
 	public string 	movieName;
 	public float	movieLength;
-	public bool		videoPaused;
+	public bool     videoPaused = false;
 	private bool    videoPausedBeforeAppPause = false;
 
+	public delegate void TransitionAction ();
+	public static event TransitionAction FadeToBlack;
+
+	//public MovieInteraction movieInteractions;
 
 	private string	mediaFullPath = string.Empty;
 	private bool	startedVideo = false;
@@ -39,7 +43,17 @@ public class VideoPreview : MonoBehaviour
 		Max_EventType
 	};
 
-
+	/// <summary>
+	/// The start of the numeric range used by event IDs.
+	/// </summary>
+	/// <description>
+	/// If multiple native rundering plugins are in use, the Oculus Media Surface plugin's event IDs
+	/// can be re-mapped to avoid conflicts.
+	/// 
+	/// Set this value so that it is higher than the highest event ID number used by your plugin.
+	/// Oculus Media Surface plugin event IDs start at eventBase and end at eventBase plus the highest
+	/// value in MediaSurfaceEventType.
+	/// </description>
 	public static int eventBase
 	{
 		get { return _eventBase; }
@@ -59,20 +73,23 @@ public class VideoPreview : MonoBehaviour
 	}
 
 	void OnEnable() {
+		//movieInteractions.ToggleState += ToggleState;
 	}
 
 	void OnDisable() {
+		//movieInteractions.ToggleState -= ToggleState;
 	}
 
-	void ToggleState() {
+	public void ToggleState() {
 		videoPaused = !videoPaused;
 		SetPaused (videoPaused);
 	}
 
+	/// <summary>
+	/// Initialization of the movie surface
+	/// </summary>
 	void Awake()
 	{
-		StartCoroutine (WaitToEnd());
-
 		#if UNITY_ANDROID && !UNITY_EDITOR
 		OVR_Media_Surface_Init();
 		#endif
@@ -105,10 +122,10 @@ public class VideoPreview : MonoBehaviour
 		#endif
 	}
 
-	IEnumerator WaitToEnd() {
-		yield return new WaitForSeconds (1.0f); // End the movie
-	}
-
+	/// <summary>
+	/// Construct the streaming asset path.
+	/// Note: For Android, we need to retrieve the data from the apk.
+	/// </summary>
 	IEnumerator RetrieveStreamingAsset(string mediaFileName)
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
@@ -147,6 +164,9 @@ public class VideoPreview : MonoBehaviour
 		StartCoroutine(DelayedStartVideo());
 	}
 
+	/// <summary>
+	/// Auto-starts video playback
+	/// </summary>
 	IEnumerator DelayedStartVideo()
 	{
 		yield return null; // delay 1 frame to allow MediaSurfaceInit from the render thread.
@@ -158,7 +178,7 @@ public class VideoPreview : MonoBehaviour
 			mediaPlayer = StartVideoPlayerOnTextureId(textureWidth, textureHeight, mediaFullPath);
 			mediaRenderer.material.mainTexture = nativeTexture;
 			#else
-			if (movieTexture != null && movieTexture.isReadyToPlay && !videoPaused)
+			if (movieTexture != null && movieTexture.isReadyToPlay)
 			{
 				movieTexture.Play();
 				if (audioEmitter != null)
@@ -261,7 +281,9 @@ public class VideoPreview : MonoBehaviour
 		#endif
 	}
 
-
+	/// <summary>
+	/// Pauses video playback when the app loses or gains focus
+	/// </summary>
 	void OnApplicationPause(bool appWasPaused)
 	{
 		if (appWasPaused)
@@ -289,6 +311,9 @@ public class VideoPreview : MonoBehaviour
 	}
 
 	#if (UNITY_ANDROID && !UNITY_EDITOR)
+	/// <summary>
+	/// Set up the video player with the movie surface texture id.
+	/// </summary>
 	AndroidJavaObject StartVideoPlayerOnTextureId(int texWidth, int texHeight, string mediaPath)
 	{
 	Debug.Log("MoviePlayer: StartVideoPlayerOnTextureId");
@@ -298,6 +323,8 @@ public class VideoPreview : MonoBehaviour
 	IntPtr androidSurface = OVR_Media_Surface_GetObject();
 	AndroidJavaObject mediaPlayer = new AndroidJavaObject("android/media/MediaPlayer");
 
+	// Can't use AndroidJavaObject.Call() with a jobject, must use low level interface
+	//mediaPlayer.Call("setSurface", androidSurface);
 	IntPtr setSurfaceMethodId = AndroidJNI.GetMethodID(mediaPlayer.GetRawClass(),"setSurface","(Landroid/view/Surface;)V");
 	jvalue[] parms = new jvalue[1];
 	parms[0] = new jvalue();
@@ -327,6 +354,12 @@ public class VideoPreview : MonoBehaviour
 	[DllImport("OculusMediaSurface")]
 	private static extern void OVR_Media_Surface_SetEventBase(int eventBase);
 
+	// This function returns an Android Surface object that is
+	// bound to a SurfaceTexture object on an independent OpenGL texture id.
+	// Each frame, before the TimeWarp processing, the SurfaceTexture is checked
+	// for updates, and if one is present, the contents of the SurfaceTexture
+	// will be copied over to the provided surfaceTexId and mipmaps will be 
+	// generated so normal Unity rendering can use it.
 	[DllImport("OculusMediaSurface")]
 	private static extern IntPtr OVR_Media_Surface_GetObject();
 

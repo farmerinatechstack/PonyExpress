@@ -26,6 +26,7 @@ public class WorldSystem: MonoBehaviour {
 		points = transform.GetComponentsInChildren<WorldPoint> ();
 
 		foreach (WorldPoint pt in points) {
+			print (pt.gameObject.name);
 			pt.SetReady ();
 			PointInteraction ptInt = pt.gameObject.GetComponent<PointInteraction> ();
 			ptInt.ToggleCanBeSelected();

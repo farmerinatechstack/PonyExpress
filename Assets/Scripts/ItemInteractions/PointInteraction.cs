@@ -18,10 +18,6 @@ public class PointInteraction : MonoBehaviour {
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
-	void Start() {
-		canBeSelected = false;
-	}
-
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
 		interactiveItem.OnExit += HandleExit;

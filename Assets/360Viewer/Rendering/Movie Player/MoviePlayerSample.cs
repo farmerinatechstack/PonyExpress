@@ -50,7 +50,7 @@ public class MoviePlayerSample : MonoBehaviour
 	public delegate void TransitionAction ();
 	public static event TransitionAction FadeToBlack;
 
-	public MovieInteraction movieInteractions;
+	//public MovieInteraction movieInteractions;
 
     private string	mediaFullPath = string.Empty;
 	private bool	startedVideo = false;
@@ -105,11 +105,11 @@ public class MoviePlayerSample : MonoBehaviour
 	}
 
 	void OnEnable() {
-		movieInteractions.ToggleState += ToggleState;
+		//movieInteractions.ToggleState += ToggleState;
 	}
 
 	void OnDisable() {
-		movieInteractions.ToggleState -= ToggleState;
+		//movieInteractions.ToggleState -= ToggleState;
 	}
 
 	void ToggleState() {
@@ -170,8 +170,8 @@ public class MoviePlayerSample : MonoBehaviour
 	IEnumerator WaitToEnd() {
 		yield return new WaitForSeconds (movieLength);
 
-		if (FadeToBlack != null)
-			FadeToBlack ();
+		//if (FadeToBlack != null)
+		//	FadeToBlack ();
 	}
 
     /// <summary>

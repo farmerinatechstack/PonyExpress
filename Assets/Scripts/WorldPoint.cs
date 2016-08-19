@@ -5,11 +5,10 @@ using System.Collections;
 public class WorldPoint : MonoBehaviour {
 	private WorldSystem world;
 	private Renderer rend;
-	private bool ready;
+	public bool ready;
 
 	// Use this for initialization
 	void Start () {
-		ready = false;
 		world = transform.parent.GetComponent<WorldSystem> ();
 		if (world == null) {
 			// TODO: throw exception

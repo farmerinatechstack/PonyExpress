@@ -1,21 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
-using System;
 
-// Handles interaction with the back button on the menu.
-public class SceneChangeInteraction : MonoBehaviour {
+public class VideoPreviewInteraction : MonoBehaviour {
 	public bool inGaze;
-	public bool ready = false;
-	public bool contains360;
-	public string videoName;
-	public float videoLength;
+	public bool ready = false;	// Used to wait for animation
 
-	public delegate void TransitionAction ();
-	public static event TransitionAction FadeToBlack;
-
-	[SerializeField] private ExperienceData data;
 	[SerializeField] private Animator menuAnimator;
+	[SerializeField] private VideoPreview prev;
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
@@ -48,10 +39,12 @@ public class SceneChangeInteraction : MonoBehaviour {
 	}
 
 	private void HandleSelected() {
-		if (inGaze & FadeToBlack != null) { 
-			data.videoName = videoName;
-			data.videoLength = videoLength;
-			FadeToBlack ();
+		if (inGaze) { 
+			prev.StartOver ();
+
+			// Reset the radial
+			radial.Hide ();
+			radial.Show ();
 		}
 	}
 }

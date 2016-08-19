@@ -2,12 +2,13 @@
 using System.Collections;
 
 public class StartScript : MonoBehaviour {
+	[SerializeField] private GameObject cameraHolder;
 	[SerializeField] private ExperienceData data;
 
 	[SerializeField] private AudioSource ambientAudio;
 	[SerializeField] private AudioSource selectAudio;
 
-
+	[SerializeField] private VRAssets.VRInput input;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 	[SerializeField] private Animator cameraAnim;
 	[SerializeField] private Animator canvasAnim;
@@ -22,12 +23,30 @@ public class StartScript : MonoBehaviour {
 
 	private void OnEnable() {
 		radial.OnSelectionComplete += HandleStart;
+		input.Back += ExitApplication;
 	}
 
 	private void OnDisable() {
 		radial.OnSelectionComplete -= HandleStart;
+		input.Back -= ExitApplication;
 	}
-	
+
+	void Start() {
+		if (data.started) {
+			canvasAnim.Play ("FadeCanvas");
+
+			cameraHolder.transform.position = new Vector3 (0, 0, 20);
+
+			ambientAudio.Play ();
+			earth.enabled = true;
+			worldSys.enabled = true;
+			explorePrompts.SetActive (false);
+
+			Destroy (flyer1Anim.gameObject);
+			Destroy (flyer2Anim.gameObject);
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (!data.started)
@@ -35,21 +54,27 @@ public class StartScript : MonoBehaviour {
 	}
 
 	void HandleStart() {
-		selectAudio.Play ();
-		ambientAudio.PlayDelayed (0.2f);
+		if (!data.started) {
+			selectAudio.Play ();
+			ambientAudio.PlayDelayed (0.2f);
 
-		data.started = true;
-		radial.Hide ();
+			data.started = true;
+			radial.Hide ();
 
-		earth.enabled = true;
-		worldSys.enabled = true;
+			earth.enabled = true;
+			worldSys.enabled = true;
 
-		cameraAnim.Play ("TranslateCamera");
-		canvasAnim.Play ("FadeCanvas");
-		flyer1Anim.Play ("Flyer1");
-		flyer2Anim.Play ("Flyer2");
+			cameraAnim.Play ("TranslateCamera");
+			canvasAnim.Play ("FadeCanvas");
+			flyer1Anim.Play ("Flyer1");
+			flyer2Anim.Play ("Flyer2");
 
-		StartCoroutine (PromptExploration ());
+			StartCoroutine (PromptExploration ());
+		}
+	}
+
+	void ExitApplication() {
+		Application.Quit ();
 	}
 
 	IEnumerator PromptExploration() {

@@ -14,9 +14,11 @@ public class MenuDisplay : MonoBehaviour {
 
 	[SerializeField] Animator menuAnim;
 	[SerializeField] Text titleTextUI;
-	[SerializeField] GameObject videoPreview360;
-	[SerializeField] GameObject videoPreview2D;
+	[SerializeField] GameObject gameObject360;
+	[SerializeField] GameObject gameObject2D;
 
+	private SceneChangeInteraction videoInteraction360;
+	private VideoPreviewInteraction videoInteraction2D;
 
 	void OnEnable() {
 		if (MenuToggled != null) {
@@ -24,45 +26,65 @@ public class MenuDisplay : MonoBehaviour {
 		}
 
 		SetMenu ();
-
-		menuAnim.Play ("Grow");
 	}
 
 	void SetMenu() {
 		titleTextUI.text = titleText;
 
 		if (display360) {
-			videoPreview2D.SetActive (false);
+			gameObject2D.SetActive (false);
 
-			SceneChangeInteraction videoInteraction = videoPreview360.GetComponent<SceneChangeInteraction> ();
-			videoInteraction.videoName = videoName;
-			videoInteraction.videoLength = videoLength;
+			videoInteraction360 = gameObject360.GetComponent<SceneChangeInteraction> ();
+			videoInteraction360.ready = false;
+			videoInteraction360.videoName = videoName;
+			videoInteraction360.videoLength = videoLength;
 
-			Renderer rend = videoPreview360.GetComponent<Renderer> ();
+			Renderer rend = videoInteraction360.GetComponent<Renderer> ();
 			rend.material.mainTexture = imageTexture;
 		} else {
-			videoPreview360.SetActive (false);
+			gameObject360.SetActive (false);
 
-			VideoPreview player = videoPreview2D.GetComponent<VideoPreview> ();
-			player.movieName = videoName;
-			player.movieLength = videoLength;
+			videoInteraction2D = gameObject2D.GetComponent<VideoPreviewInteraction> ();
+			videoInteraction2D.ready = false;
 
-			Renderer rend = videoPreview2D.GetComponent<Renderer> ();
-			rend.material.mainTexture = imageTexture;
+			//VideoPreview player = videoPreview2D.GetComponent<VideoPreview> ();
+			//player.movieName = videoName;
+			//player.movieLength = videoLength;
+
+			//Renderer rend = videoPreview2D.GetComponent<Renderer> ();
+			//rend.material.mainTexture = imageTexture;
+
 		}
+		menuAnim.Play ("Grow");
+		Invoke ("SetReady", 1.1f);
 	}
 
 	public void Hide() {
-		if (MenuToggled != null)
-			MenuToggled ();
+		
 
 		StartCoroutine (HideMenu ());
 	}
 
+	void SetReady() {
+		if (display360) {
+			videoInteraction360.ready = true;
+		} else {
+			videoInteraction2D.ready = true;
+
+		}
+	}
+
+
+
 	IEnumerator HideMenu() {
 		menuAnim.Play ("Shrink");
+
+		yield return new WaitForSeconds (1.1f); // wait for the animation to end
+
+
+		if (MenuToggled != null)
+			MenuToggled ();
 			
-		yield return new WaitForSeconds (1.5f);
 		gameObject.SetActive (false);
 		transform.localScale = Vector3.one;
 	}
