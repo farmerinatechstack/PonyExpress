@@ -19,6 +19,7 @@ public class MenuDisplay : MonoBehaviour {
 
 	private SceneChangeInteraction videoInteraction360;
 	private VideoPreviewInteraction videoInteraction2D;
+	private VideoPreview prev;
 
 	void OnEnable() {
 		if (MenuToggled != null) {
@@ -45,7 +46,7 @@ public class MenuDisplay : MonoBehaviour {
 			gameObject360.SetActive (false);
 
 			videoInteraction2D = gameObject2D.GetComponent<VideoPreviewInteraction> ();
-			VideoPreview prev = gameObject2D.GetComponent<VideoPreview> ();
+			prev = gameObject2D.GetComponent<VideoPreview> ();
 
 			videoInteraction2D.ready = false;
 			//prev.movieName = videoName;

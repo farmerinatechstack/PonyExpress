@@ -23,6 +23,8 @@ public class VideoPreview : MonoBehaviour
 	private string	mediaFullPath = string.Empty;
 	private bool	startedVideo = false;
 
+	[SerializeField] private MenuDisplay menu;
+
 	#if (UNITY_ANDROID && !UNITY_EDITOR)
 	private Texture2D nativeTexture = null;
 	private IntPtr	  nativeTexId = IntPtr.Zero;
@@ -72,17 +74,13 @@ public class VideoPreview : MonoBehaviour
 		GL.IssuePluginEvent((int)eventType + eventBase);
 	}
 
-	void OnEnable() {
-		//movieInteractions.ToggleState += ToggleState;
-	}
-
-	void OnDisable() {
-		//movieInteractions.ToggleState -= ToggleState;
-	}
-
 	public void ToggleState() {
 		videoPaused = !videoPaused;
 		SetPaused (videoPaused);
+	}
+
+	void OnEnable() {
+		Awake ();
 	}
 
 	/// <summary>
@@ -90,6 +88,9 @@ public class VideoPreview : MonoBehaviour
 	/// </summary>
 	void Awake()
 	{
+		movieName = menu.videoName;
+		movieLength = menu.videoLength;
+
 		#if UNITY_ANDROID && !UNITY_EDITOR
 		OVR_Media_Surface_Init();
 		#endif
