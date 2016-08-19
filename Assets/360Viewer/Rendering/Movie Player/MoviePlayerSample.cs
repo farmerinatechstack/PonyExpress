@@ -44,13 +44,14 @@ public class MoviePlayerSample : MonoBehaviour
 {
 	public string 	movieName;
 	public float	movieLength;
+	public float 	timePlayed;
     public bool     videoPaused = false;
     private bool    videoPausedBeforeAppPause = false;
 
 	public delegate void TransitionAction ();
 	public static event TransitionAction FadeToBlack;
 
-	//public MovieInteraction movieInteractions;
+	public MovieInteraction movieInteractions;
 
     private string	mediaFullPath = string.Empty;
 	private bool	startedVideo = false;
@@ -105,11 +106,11 @@ public class MoviePlayerSample : MonoBehaviour
 	}
 
 	void OnEnable() {
-		//movieInteractions.ToggleState += ToggleState;
+		movieInteractions.ToggleState += ToggleState;
 	}
 
 	void OnDisable() {
-		//movieInteractions.ToggleState -= ToggleState;
+		movieInteractions.ToggleState -= ToggleState;
 	}
 
 	void ToggleState() {
@@ -134,6 +135,7 @@ public class MoviePlayerSample : MonoBehaviour
 		}
 			
 		StartCoroutine (WaitToEnd());
+		timePlayed = 0.0f;
 
 		#if UNITY_ANDROID && !UNITY_EDITOR
 				OVR_Media_Surface_Init();
@@ -168,10 +170,12 @@ public class MoviePlayerSample : MonoBehaviour
     }
 
 	IEnumerator WaitToEnd() {
-		yield return new WaitForSeconds (movieLength);
+		while (timePlayed < movieLength + 1.0f) {
+			yield return null;
+		}
 
-		//if (FadeToBlack != null)
-		//	FadeToBlack ();
+		if (FadeToBlack != null)
+			FadeToBlack ();
 	}
 
     /// <summary>
@@ -244,6 +248,10 @@ public class MoviePlayerSample : MonoBehaviour
 
 	void Update()
 	{
+		if (!videoPaused) {
+			timePlayed += Time.deltaTime;
+		}
+
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
 		        if (!videoPaused) {
 		            IntPtr currTexId = OVR_Media_Surface_GetNativeTexture();
