@@ -45,15 +45,14 @@ public class MenuDisplay : MonoBehaviour {
 			gameObject360.SetActive (false);
 
 			videoInteraction2D = gameObject2D.GetComponent<VideoPreviewInteraction> ();
+			VideoPreview prev = gameObject2D.GetComponent<VideoPreview> ();
+
 			videoInteraction2D.ready = false;
+			prev.movieName = videoName;
+			prev.movieLength = videoLength;
 
-			//VideoPreview player = videoPreview2D.GetComponent<VideoPreview> ();
-			//player.movieName = videoName;
-			//player.movieLength = videoLength;
-
-			//Renderer rend = videoPreview2D.GetComponent<Renderer> ();
-			//rend.material.mainTexture = imageTexture;
-
+			Renderer rend = gameObject2D.GetComponent<Renderer> ();
+			rend.material.mainTexture = imageTexture;
 		}
 		menuAnim.Play ("Grow");
 		Invoke ("SetReady", 1.1f);
@@ -81,9 +80,12 @@ public class MenuDisplay : MonoBehaviour {
 
 		yield return new WaitForSeconds (1.1f); // wait for the animation to end
 
-
 		if (MenuToggled != null)
 			MenuToggled ();
+
+		// Reset the menu
+		gameObject360.SetActive (true);
+		gameObject2D.SetActive (true);
 			
 		gameObject.SetActive (false);
 		transform.localScale = Vector3.one;
