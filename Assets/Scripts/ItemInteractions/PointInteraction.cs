@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// Handles interaction with the SAC -> LA light journey
 public class PointInteraction : MonoBehaviour {
 	public string titleText;
 	public Texture imageTexture;
@@ -48,6 +47,8 @@ public class PointInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze && canBeSelected) {
+			inGaze = false;
+
 			MenuDisplay disp = menu.GetComponent<MenuDisplay> ();
 			disp.titleText = titleText;
 			disp.imageTexture = imageTexture;

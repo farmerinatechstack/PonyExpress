@@ -48,8 +48,8 @@ public class MenuDisplay : MonoBehaviour {
 			VideoPreview prev = gameObject2D.GetComponent<VideoPreview> ();
 
 			videoInteraction2D.ready = false;
-			prev.movieName = videoName;
-			prev.movieLength = videoLength;
+			//prev.movieName = videoName;
+			//prev.movieLength = videoLength;
 
 			Renderer rend = gameObject2D.GetComponent<Renderer> ();
 			rend.material.mainTexture = imageTexture;
@@ -59,8 +59,6 @@ public class MenuDisplay : MonoBehaviour {
 	}
 
 	public void Hide() {
-		
-
 		StartCoroutine (HideMenu ());
 	}
 
@@ -84,6 +82,7 @@ public class MenuDisplay : MonoBehaviour {
 			MenuToggled ();
 
 		// Reset the menu
+		titleTextUI.text = "";
 		gameObject360.SetActive (true);
 		gameObject2D.SetActive (true);
 			
