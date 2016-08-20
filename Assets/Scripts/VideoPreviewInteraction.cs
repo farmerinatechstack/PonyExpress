@@ -5,10 +5,16 @@ public class VideoPreviewInteraction : MonoBehaviour {
 	public bool inGaze;
 	public bool ready = false;	// Used to wait for animation
 
-	[SerializeField] private Animator menuAnimator;
 	[SerializeField] private VideoPreview prev;
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
-	[SerializeField] private VRAssets.ReticleRadial radial;
+
+	private VRAssets.ReticleRadial radial;
+	private Animator menuAnimator;
+
+	void Awake() {
+		radial = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<VRAssets.ReticleRadial> ();
+		menuAnimator = GameObject.FindGameObjectWithTag ("Menu").GetComponent<Animator> ();
+	}
 
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
@@ -40,7 +46,7 @@ public class VideoPreviewInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze) { 
-			prev.StartOver ();
+			prev.Select ();
 
 			// Reset the radial
 			radial.Hide ();

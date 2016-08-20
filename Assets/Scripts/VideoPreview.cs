@@ -12,18 +12,17 @@ public class VideoPreview : MonoBehaviour
 {
 	public string 	movieName;
 	public float	movieLength;
+	public float	playTime;
+	public bool 	done = false;
 	public bool     videoPaused = false;
 	private bool    videoPausedBeforeAppPause = false;
 
-	public delegate void TransitionAction ();
-	public static event TransitionAction FadeToBlack;
-
-	//public MovieInteraction movieInteractions;
+	public VideoPreviewInteraction movieInteractions;
 
 	private string	mediaFullPath = string.Empty;
 	private bool	startedVideo = false;
 
-	[SerializeField] private MenuDisplay menu;
+	private MenuDisplay menu;
 
 	#if (UNITY_ANDROID && !UNITY_EDITOR)
 	private Texture2D nativeTexture = null;
@@ -44,18 +43,7 @@ public class VideoPreview : MonoBehaviour
 		Update = 2,
 		Max_EventType
 	};
-
-	/// <summary>
-	/// The start of the numeric range used by event IDs.
-	/// </summary>
-	/// <description>
-	/// If multiple native rundering plugins are in use, the Oculus Media Surface plugin's event IDs
-	/// can be re-mapped to avoid conflicts.
-	/// 
-	/// Set this value so that it is higher than the highest event ID number used by your plugin.
-	/// Oculus Media Surface plugin event IDs start at eventBase and end at eventBase plus the highest
-	/// value in MediaSurfaceEventType.
-	/// </description>
+		
 	public static int eventBase
 	{
 		get { return _eventBase; }
@@ -74,20 +62,23 @@ public class VideoPreview : MonoBehaviour
 		GL.IssuePluginEvent((int)eventType + eventBase);
 	}
 
-	public void ToggleState() {
-		videoPaused = !videoPaused;
-		SetPaused (videoPaused);
+	public void Select() {
+		if (playTime < movieLength) {
+			videoPaused = !videoPaused;
+			SetPaused (videoPaused);
+		} else {
+			StartOver ();
+		}
 	}
 
 	void OnEnable() {
 		Awake ();
 	}
 
-	/// <summary>
-	/// Initialization of the movie surface
-	/// </summary>
 	void Awake()
 	{
+		menu = GameObject.FindGameObjectWithTag ("Menu").GetComponent<MenuDisplay> ();
+
 		movieName = menu.videoName;
 		movieLength = menu.videoLength;
 
@@ -123,10 +114,6 @@ public class VideoPreview : MonoBehaviour
 		#endif
 	}
 
-	/// <summary>
-	/// Construct the streaming asset path.
-	/// Note: For Android, we need to retrieve the data from the apk.
-	/// </summary>
 	IEnumerator RetrieveStreamingAsset(string mediaFileName)
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
@@ -165,9 +152,6 @@ public class VideoPreview : MonoBehaviour
 		StartCoroutine(DelayedStartVideo());
 	}
 
-	/// <summary>
-	/// Auto-starts video playback
-	/// </summary>
 	IEnumerator DelayedStartVideo()
 	{
 		yield return null; // delay 1 frame to allow MediaSurfaceInit from the render thread.
@@ -193,6 +177,10 @@ public class VideoPreview : MonoBehaviour
 
 	void Update()
 	{
+		if (!videoPaused) {
+			playTime += Time.deltaTime;
+		}
+
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
 		if (!videoPaused) {
 		IntPtr currTexId = OVR_Media_Surface_GetNativeTexture();
@@ -221,6 +209,7 @@ public class VideoPreview : MonoBehaviour
 
 	public void StartOver()
 	{
+		playTime = 0.0f;
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
 		if (mediaPlayer != null)
 		{
@@ -282,9 +271,6 @@ public class VideoPreview : MonoBehaviour
 		#endif
 	}
 
-	/// <summary>
-	/// Pauses video playback when the app loses or gains focus
-	/// </summary>
 	void OnApplicationPause(bool appWasPaused)
 	{
 		if (appWasPaused)

@@ -9,6 +9,7 @@ public class MenuDisplay : MonoBehaviour {
 	public Texture imageTexture;
 	public string videoName;
 	public float videoLength;
+	public GameObject prefab2D;
 
 	public event Action MenuToggled;
 
@@ -25,6 +26,10 @@ public class MenuDisplay : MonoBehaviour {
 		if (MenuToggled != null) {
 			MenuToggled ();
 		}
+
+		gameObject2D = Instantiate (prefab2D);
+		gameObject2D.GetComponent<RectTransform> ().SetParent (transform);
+		gameObject2D.GetComponent<RectTransform>().localPosition = new Vector3 (0f, -0.4f, 3f);
 
 		SetMenu ();
 	}
@@ -49,8 +54,6 @@ public class MenuDisplay : MonoBehaviour {
 			prev = gameObject2D.GetComponent<VideoPreview> ();
 
 			videoInteraction2D.ready = false;
-			//prev.movieName = videoName;
-			//prev.movieLength = videoLength;
 
 			Renderer rend = gameObject2D.GetComponent<Renderer> ();
 			rend.material.mainTexture = imageTexture;
@@ -87,6 +90,8 @@ public class MenuDisplay : MonoBehaviour {
 		gameObject360.SetActive (true);
 		gameObject2D.SetActive (true);
 			
+		Destroy (gameObject2D);
+
 		gameObject.SetActive (false);
 		transform.localScale = Vector3.one;
 	}

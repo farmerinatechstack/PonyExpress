@@ -12,8 +12,6 @@ public class StartScript : MonoBehaviour {
 	[SerializeField] private VRAssets.ReticleRadial radial;
 	[SerializeField] private Animator cameraAnim;
 	[SerializeField] private Animator canvasAnim;
-	[SerializeField] private Animator flyer1Anim;
-	[SerializeField] private Animator flyer2Anim;
 
 
 	[SerializeField] private EarthInteraction earth;
@@ -35,15 +33,11 @@ public class StartScript : MonoBehaviour {
 		if (data.started) {
 			canvasAnim.Play ("FadeCanvas");
 
-			cameraHolder.transform.position = new Vector3 (0, 0, 20);
+			cameraHolder.transform.position = new Vector3 (0, 0, 18);
 
-			ambientAudio.Play ();
 			earth.enabled = true;
 			worldSys.enabled = true;
 			explorePrompts.SetActive (false);
-
-			Destroy (flyer1Anim.gameObject);
-			Destroy (flyer2Anim.gameObject);
 		}
 	}
 
@@ -56,7 +50,6 @@ public class StartScript : MonoBehaviour {
 	void HandleStart() {
 		if (!data.started) {
 			selectAudio.Play ();
-			ambientAudio.PlayDelayed (0.2f);
 
 			data.started = true;
 			radial.Hide ();
@@ -64,10 +57,8 @@ public class StartScript : MonoBehaviour {
 			earth.enabled = true;
 			worldSys.enabled = true;
 
-			cameraAnim.Play ("TranslateCamera");
+			cameraAnim.Play ("CameraTranslation");
 			canvasAnim.Play ("FadeCanvas");
-			flyer1Anim.Play ("Flyer1");
-			flyer2Anim.Play ("Flyer2");
 
 			StartCoroutine (PromptExploration ());
 		}
