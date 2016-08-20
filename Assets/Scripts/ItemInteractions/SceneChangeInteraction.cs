@@ -14,10 +14,11 @@ public class SceneChangeInteraction : MonoBehaviour {
 	public delegate void TransitionAction ();
 	public static event TransitionAction FadeToBlack;
 
-	[SerializeField] private ExperienceData data;
 	[SerializeField] private Animator menuAnimator;
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
+
+	private ExperienceData data;
 
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
@@ -48,7 +49,10 @@ public class SceneChangeInteraction : MonoBehaviour {
 	}
 
 	private void HandleSelected() {
-		if (inGaze & FadeToBlack != null) { 
+		if (inGaze & FadeToBlack != null) {
+			data = GameObject.FindGameObjectWithTag ("Data").GetComponent<ExperienceData> ();
+
+			data.started = true;
 			data.videoName = videoName;
 			data.videoLength = videoLength;
 			FadeToBlack ();

@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class StartScript : MonoBehaviour {
+	public GameObject dataPrefab;
+
 	[SerializeField] private GameObject cameraHolder;
 	[SerializeField] private ExperienceData data;
 
@@ -30,10 +32,18 @@ public class StartScript : MonoBehaviour {
 	}
 
 	void Start() {
-		if (data.started) {
+		GameObject dataObject = GameObject.FindGameObjectWithTag ("Data");
+
+		if (dataObject == null) {
+			dataObject = Instantiate (dataPrefab);
+			data = dataObject.GetComponent<ExperienceData> ();
+		} else {
+			data = dataObject.GetComponent<ExperienceData> ();
+			print ("Skipping start scene");
+
 			canvasAnim.Play ("FadeCanvas");
 
-			cameraHolder.transform.position = new Vector3 (0, 0, 18);
+			cameraAnim.Play ("JumpToStart");
 
 			earth.enabled = true;
 			worldSys.enabled = true;
@@ -49,9 +59,9 @@ public class StartScript : MonoBehaviour {
 
 	void HandleStart() {
 		if (!data.started) {
+			data.started = true;
 			selectAudio.Play ();
 
-			data.started = true;
 			radial.Hide ();
 
 			earth.enabled = true;

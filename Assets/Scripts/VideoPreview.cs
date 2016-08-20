@@ -179,6 +179,9 @@ public class VideoPreview : MonoBehaviour
 	{
 		if (!videoPaused) {
 			playTime += Time.deltaTime;
+			if (playTime > movieLength) {
+				videoPaused = true;
+			}
 		}
 
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
@@ -191,6 +194,8 @@ public class VideoPreview : MonoBehaviour
 		}
 
 		IssuePluginEvent(MediaSurfaceEventType.Update);
+		} else {
+		mediaPlayer.Call("pause");
 		}
 		#else
 		if (movieTexture != null)
