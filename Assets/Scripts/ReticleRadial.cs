@@ -102,6 +102,7 @@ namespace VRAssets
 						selectAudio.Play ();
 					}
 				}
+				selection.fillAmount = 0;
 				OnSelectionComplete ();
 			}
 		}

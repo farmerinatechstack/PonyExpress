@@ -44,7 +44,7 @@ public class MoviePlayerSample : MonoBehaviour
 {
 	public string 	movieName;
 	public float	movieLength;
-	public float 	timePlayed;
+	private float 	timePlayed;
     public bool     videoPaused = false;
     private bool    videoPausedBeforeAppPause = false;
 
@@ -123,17 +123,6 @@ public class MoviePlayerSample : MonoBehaviour
 	/// </summary>
 	void Awake()
 	{
-		GameObject d = GameObject.Find ("ExperienceData");
-
-		if (d != null) {
-			ExperienceData data = d.GetComponent<ExperienceData> ();
-			movieName = data.videoName;
-			movieLength = data.videoLength;
-		} else {
-			movieName = "ForbiddenTrim.mp4"; 	// Test movie
-			movieLength = 5.0f;					// Test length
-		}
-			
 		StartCoroutine (WaitToEnd());
 		timePlayed = 0.0f;
 

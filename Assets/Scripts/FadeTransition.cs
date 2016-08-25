@@ -8,6 +8,8 @@ public class FadeTransition : MonoBehaviour {
 	public float fadeTime = 2.5f;	// Time to fade
 	public string sceneName;		// Name of scene to transition to
 
+	private AsyncOperation async;
+
 	private void OnEnable() {
 		SceneChangeInteraction.FadeToBlack += FadeToBlack;
 		MovieInteraction.FadeToBlack += FadeToBlack;
@@ -22,12 +24,14 @@ public class FadeTransition : MonoBehaviour {
 
 	// On start, the material always fades from black to transparent
 	void Start () {
+		StartCoroutine (LoadScene ());
+
 		m.color = new Color (m.color.r, m.color.g, m.color.b, 1.0f);
 		StartCoroutine (FadeTo (0.0f, fadeTime));
 	}
 
 	// Fades to black and transitions to sceneName in fadeTime
-	private void FadeToBlack() {
+	void FadeToBlack() {
 		StartCoroutine (FadeTo(1.0f, fadeTime));
 
 		StartCoroutine (SwapScene());
@@ -47,9 +51,18 @@ public class FadeTransition : MonoBehaviour {
 		m.color = finalColor;		// Set the alpha to the target alpha
 	}
 
-	private IEnumerator SwapScene() {
-		print ("Swapping to scene: " + sceneName);
+	IEnumerator LoadScene() {
+		async = SceneManager.LoadSceneAsync(sceneName);
+		async.allowSceneActivation = false;
+
+		yield return async;
+	}
+
+	IEnumerator SwapScene() {
 		yield return new WaitForSeconds (fadeTime);
-		SceneManager.LoadScene (sceneName);
+
+		if (async != null) {
+			async.allowSceneActivation = true;
+		}
 	}
 }

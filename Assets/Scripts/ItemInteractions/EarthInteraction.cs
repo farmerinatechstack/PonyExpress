@@ -43,7 +43,7 @@ public class EarthInteraction : MonoBehaviour {
 	private Vector3 GetRotationVector() {
 		Vector3 gazeXYDirection = cameraTransform.forward - Vector3.forward;
 		if (gazeXYDirection.magnitude > 0.15f) {
-			return new Vector3 (-gazeXYDirection.y, gazeXYDirection.x, 0);
+			return new Vector3 (-gazeXYDirection.y, gazeXYDirection.x, 0) * 1.2f;
 		} else {	// Enable keypad spinning
 			return new Vector3 (-Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), 0);
 		}
