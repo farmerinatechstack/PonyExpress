@@ -14,7 +14,7 @@ namespace VRAssets {
 		[SerializeField] private LayerMask m_ExclusionLayers;    	// Layers to exclude from the raycast
 
 
-		private VRInteractiveItem currentInteractible;
+		[SerializeField] private VRInteractiveItem currentInteractible;
 		private VRInteractiveItem lastInteractible;
 
 		// Expose the interactive item to other classes

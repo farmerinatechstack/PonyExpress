@@ -47,10 +47,6 @@ public class VideoPreviewInteraction : MonoBehaviour {
 	private void HandleSelected() {
 		if (inGaze) { 
 			prev.Select ();
-
-			// Reset the radial
-			radial.Hide ();
-			radial.Show ();
 		}
 	}
 }

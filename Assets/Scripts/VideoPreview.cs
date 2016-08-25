@@ -214,6 +214,7 @@ public class VideoPreview : MonoBehaviour
 
 	public void StartOver()
 	{
+		videoPaused = false;
 		playTime = 0.0f;
 		#if (UNITY_ANDROID && !UNITY_EDITOR)
 		if (mediaPlayer != null)
@@ -221,6 +222,7 @@ public class VideoPreview : MonoBehaviour
 		try
 		{
 		mediaPlayer.Call("seekTo", 0);
+		mediaPlayer.Call("start");
 		}
 		catch (Exception e)
 		{

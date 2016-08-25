@@ -13,6 +13,7 @@ public class MenuDisplay : MonoBehaviour {
 
 	public event Action MenuToggled;
 
+	[SerializeField] AudioSource ambientAudio;
 	[SerializeField] Animator menuAnim;
 	[SerializeField] Text titleTextUI;
 	[SerializeField] GameObject gameObject360;
@@ -59,6 +60,7 @@ public class MenuDisplay : MonoBehaviour {
 			rend.material.mainTexture = imageTexture;
 		}
 		menuAnim.Play ("Grow");
+		ambientAudio.volume = 0.01f;
 		Invoke ("SetReady", 1.1f);
 	}
 
@@ -79,6 +81,7 @@ public class MenuDisplay : MonoBehaviour {
 
 	IEnumerator HideMenu() {
 		menuAnim.Play ("Shrink");
+		ambientAudio.volume = 0.05f;
 
 		yield return new WaitForSeconds (1.1f); // wait for the animation to end
 

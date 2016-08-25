@@ -63,6 +63,11 @@ namespace VRAssets
 			selection.fillAmount = 0f;            
 		}
 
+		public void ResetRadial() {
+			selection.fillAmount = 0;
+			Show ();
+		}
+
 		private IEnumerator FillSelectionRadial()
 		{
 			// At the start of the coroutine, the bar is not filled
@@ -102,7 +107,7 @@ namespace VRAssets
 						selectAudio.Play ();
 					}
 				}
-				selection.fillAmount = 0;
+				ResetRadial ();
 				OnSelectionComplete ();
 			}
 		}
