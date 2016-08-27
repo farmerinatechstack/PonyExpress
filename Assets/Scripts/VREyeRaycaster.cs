@@ -8,9 +8,9 @@ namespace VRAssets {
 		[SerializeField] private Reticle reticle;                 	// The reticle, if applicable
 		[SerializeField] private VRInput vrInput;                 	// Used to call input based events on the current VRInteractiveItem
 		[SerializeField] private bool showDebugRay;               	// Optionally show the debug ray
-		[SerializeField] private float debugRayLength = 5f;     	// Debug ray length
+		[SerializeField] private float debugRayLength = 7f;     	// Debug ray length
 		[SerializeField] private float debugRayDuration = 1f;       // How long the Debug ray will remain visible
-		[SerializeField] private float rayLength = 1000f;      		// How far into the scene the ray is cast
+		[SerializeField] private float rayLength = 7f;      		// How far into the scene the ray is cast
 		[SerializeField] private LayerMask m_ExclusionLayers;    	// Layers to exclude from the raycast
 
 
@@ -37,7 +37,7 @@ namespace VRAssets {
 
 		private void EyeRaycast() {
 			if (showDebugRay) {
-				Debug.DrawRay (vrCamera.position, vrCamera.forward * debugRayLength, Color.blue, debugRayDuration);
+				Debug.DrawRay (vrCamera.position, vrCamera.forward * rayLength, Color.blue, debugRayDuration);
 			}
 
 			// Execute raycast
