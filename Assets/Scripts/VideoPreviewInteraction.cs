@@ -14,6 +14,12 @@ public class VideoPreviewInteraction : MonoBehaviour {
 	void Awake() {
 		radial = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<VRAssets.ReticleRadial> ();
 		menuAnimator = GameObject.FindGameObjectWithTag ("Menu").GetComponent<Animator> ();
+
+		GameObject menu = GameObject.FindGameObjectWithTag ("Menu");
+		MenuDisplay disp = menu.GetComponent<MenuDisplay> ();
+		if (disp.videoName == "Lingtong.mp4") {
+			gameObject.transform.Rotate(new Vector3(0,0,90));
+		}
 	}
 
 	private void OnEnable() {
